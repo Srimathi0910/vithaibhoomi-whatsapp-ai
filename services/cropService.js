@@ -1,43 +1,72 @@
-const db =
-require("../config/firebase");
+const db = require("../config/firebase");
+
+
+async function saveCrop(
+    data,
+    whatsappImageURL,
+    message
+) {
+
+
+    await db
+    .collection("crops")
+    .add({
+
+        // Gemini extracted crop details
+        name:
+        data.name || "",
+
+
+        days:
+        data.days || "",
+
+
+        status:
+        data.status || "",
+
+
+        description:
+        data.description || "",
 
 
 
-async function saveCrop(data,imageURL){
 
 
-await db
-.collection("crop")
-.add({
 
 
-name:data.name,
+        // Original WhatsApp image URL
+        whatsappImageURL:
+        whatsappImageURL,
 
 
-days:data.days,
+
+        // WhatsApp details
+        whatsappUser:
+        message.from,
 
 
-status:data.status,
+        whatsappMessageId:
+        message.id,
 
 
-description:data.description,
+        createdAt:
+        new Date(),
 
 
-imageURL:imageURL,
+        updatedAt:
+        new Date(),
 
 
-createdAt:
-new Date(),
+        isActive:
+        true
+
+    });
 
 
-updatedAt:
-new Date()
-
-
-});
-
+    console.log("Firebase crop saved");
 
 }
 
 
-module.exports=saveCrop;
+
+module.exports = saveCrop;

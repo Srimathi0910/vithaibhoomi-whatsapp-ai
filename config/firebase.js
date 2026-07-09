@@ -1,17 +1,42 @@
 const { initializeApp, cert } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
 
-const serviceAccount = require("../firebase-key.json");
+
+require("dotenv").config();
+
+
+let serviceAccount;
+
+
+// Local + Render support
+
+if(process.env.FIREBASE_SERVICE_ACCOUNT){
+
+    serviceAccount =
+    JSON.parse(
+        process.env.FIREBASE_SERVICE_ACCOUNT
+    );
+
+}
+else{
+
+    serviceAccount =
+    require("../firebase-service-account.json");
+
+}
+
 
 
 initializeApp({
 
-credential: cert(serviceAccount)
+    credential:
+    cert(serviceAccount)
 
 });
 
 
-const db = getFirestore();
+const db =
+getFirestore();
 
 
 module.exports = db;

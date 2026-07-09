@@ -1,44 +1,54 @@
-const cloudinary =
-require("../config/cloudinary");
+const cloudinary = require("../config/cloudinary");
 
 
-async function uploadImage(buffer){
+const uploadImage = (buffer) => {
+
+    return new Promise((resolve, reject) => {
 
 
-return new Promise(
-(resolve,reject)=>{
+        const stream =
+            cloudinary.uploader.unsigned_upload_stream(
+                "vithaibhoomi-whatsapp", // your unsigned preset name
+                {
+                    folder: "crops"
+                },
+
+                (error, result) => {
+
+                    if (error) {
+
+                        console.log(
+                            "Cloudinary Upload Error",
+                            error
+                        );
+
+                        reject(error);
+
+                    }
+                    else {
+
+                        console.log(
+                            "Cloudinary Upload Completed"
+                        );
+
+                        resolve(
+                            result.secure_url
+                        );
+
+                    }
+
+                }
+            );
 
 
-cloudinary.uploader
-.upload_stream(
-
-{
-folder:"vithaibhoomi/crops"
-},
-
-(error,result)=>{
+        stream.end(buffer);
 
 
-if(error)
-reject(error);
+    });
+
+};
 
 
-else
-resolve(result.secure_url);
-
-
-}
-
-)
-
-.end(buffer);
-
-
-
-});
-
-
-}
-
-
-module.exports=uploadImage;
+module.exports = {
+    uploadImage
+};
