@@ -3,15 +3,12 @@ const genAI = require("../config/gemini");
 
 async function extractCrop(buffer) {
 
-
     const model = genAI.getGenerativeModel({
         model: "gemini-2.5-flash"
     });
 
 
-
     const imageBase64 = buffer.toString("base64");
-
 
 
     const result = await model.generateContent([
@@ -22,26 +19,33 @@ You are a crop table data extractor.
 
 The image contains a table.
 
-Each row represents one crop.
+Each row is a separate crop.
 
-Extract every row.
+Extract ALL rows.
 
 Return ONLY JSON array.
 
-Format:
+Example:
 
 [
  {
-  "name":"",
-  "days":"",
-  "description":"",
-  "status":""
+  "name":"Tomato",
+  "days":"90",
+  "description":"Healthy",
+  "status":"Ready"
+ },
+ {
+  "name":"Rice",
+  "days":"120",
+  "description":"Healthy",
+  "status":"Ready"
  }
 ]
 
-Do not add markdown.
-Do not add explanation.
-
+Rules:
+- Do not add markdown
+- Do not add explanation
+- Return only JSON
 `
         },
 
@@ -52,13 +56,10 @@ Do not add explanation.
             }
         }
 
-
     ]);
 
 
-
     let text = result.response.text();
-
 
 
     text = text
@@ -67,17 +68,12 @@ Do not add explanation.
         .trim();
 
 
-
-    console.log("GEMINI RAW:",text);
-
+    console.log("GEMINI RAW:", text);
 
 
     return JSON.parse(text);
 
-
-
 }
-
 
 
 module.exports = extractCrop;

@@ -6,7 +6,6 @@ async function saveCrop(crops, whatsappImageURL, message){
 
     for(const crop of crops){
 
-
         await db
         .collection("crops")
         .add({
@@ -20,24 +19,20 @@ async function saveCrop(crops, whatsappImageURL, message){
             status: crop.status,
 
 
-            // crop image
-            imageURL: "",
+            // actual crop image
+            imageURL: null,
 
 
-            // original whatsapp image
+            // whatsapp original table image
             whatsappImageURL: whatsappImageURL,
 
 
-            sender:
-            message.from,
+            sender: message.from,
 
 
-            createdAt:
-            new Date(),
+            createdAt:new Date(),
 
-
-            updatedAt:
-            new Date()
+            updatedAt:new Date()
 
         });
 
@@ -45,9 +40,7 @@ async function saveCrop(crops, whatsappImageURL, message){
     }
 
 
-
 }
-
 
 
 module.exports = saveCrop;
