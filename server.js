@@ -3,8 +3,11 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
-const { getMediaURL, downloadImage } = require("./services/whatsappService");
-
+const {
+    getMediaURL,
+    downloadImage,
+    sendTextMessage
+} = require("./services/whatsappService");
 const { uploadImage } = require("./services/cloudinaryService");
 
 console.log(uploadImage);
@@ -133,6 +136,18 @@ app.post("/webhook", async (req, res) => {
       await saveCrop(crop, whatsappImageURL, message);
 
       console.log("✅ CROP SAVED TO FIREBASE");
+      await sendTextMessage(
+    message.from,
+    `✅ Crop saved successfully!
+
+🌱 Crop: ${crop.name}
+📅 Days: ${crop.days}
+📌 Status: ${crop.status}
+
+Thank you for using VithaiBhoomi.`
+);
+
+console.log("✅ Success message sent to WhatsApp");
 
       return;
     }
