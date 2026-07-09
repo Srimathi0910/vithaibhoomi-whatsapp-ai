@@ -4,9 +4,9 @@ const express = require("express");
 const cors = require("cors");
 
 const {
-    getMediaURL,
-    downloadImage,
-    sendTextMessage
+  getMediaURL,
+  downloadImage,
+  sendTextMessage,
 } = require("./services/whatsappService");
 const { uploadImage } = require("./services/cloudinaryService");
 
@@ -136,7 +136,13 @@ app.post("/webhook", async (req, res) => {
       await saveCrop(crop, whatsappImageURL, message);
 
       console.log("✅ CROP SAVED TO FIREBASE");
-      await sendTextMessage(
+
+      try {
+
+  console.log("Sending WhatsApp reply to:", message.from);
+
+
+  const response = await sendTextMessage(
     message.from,
     `✅ Crop saved successfully!
 
@@ -145,9 +151,23 @@ app.post("/webhook", async (req, res) => {
 📌 Status: ${crop.status}
 
 Thank you for using VithaiBhoomi.`
-);
+  );
 
-console.log("✅ Success message sent to WhatsApp");
+
+  console.log("WhatsApp API Response:");
+  console.log(response);
+
+
+}
+catch(err){
+
+  console.log("❌ WhatsApp Reply Failed");
+
+  console.log(
+    err.response?.data || err.message
+  );
+
+}
 
       return;
     }

@@ -40,23 +40,32 @@ async function downloadImage(url) {
 // Send WhatsApp text message
 async function sendTextMessage(to, message) {
 
-    await axios.post(
+    const response = await axios.post(
+
         `https://graph.facebook.com/v20.0/${process.env.PHONE_NUMBER_ID}/messages`,
+
         {
-            messaging_product: "whatsapp",
-            to: to,
-            type: "text",
-            text: {
-                body: message
+            messaging_product:"whatsapp",
+            to:to,
+            type:"text",
+            text:{
+                body:message
             }
         },
+
         {
-            headers: {
-                Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
-                "Content-Type": "application/json"
+            headers:{
+                Authorization:
+                `Bearer ${process.env.WHATSAPP_TOKEN}`,
+
+                "Content-Type":"application/json"
             }
         }
+
     );
+
+
+    return response.data;
 
 }
 
