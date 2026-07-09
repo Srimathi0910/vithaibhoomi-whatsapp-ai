@@ -1,83 +1,83 @@
-const genAI =
-    require("../config/gemini");
+const genAI = require("../config/gemini");
 
 
 async function extractCrop(buffer) {
 
 
-    const model =
-        genAI.getGenerativeModel({
-
-            model:
-                 "gemini-2.5-flash"
-
-        });
+    const model = genAI.getGenerativeModel({
+        model: "gemini-2.5-flash"
+    });
 
 
 
-    const imageBase64 =
-        buffer.toString("base64");
+    const imageBase64 = buffer.toString("base64");
 
 
 
-    const result =
-        await model.generateContent([
+    const result = await model.generateContent([
 
+        {
+            text: `
+You are a crop table data extractor.
 
-            {
-                text:
-                    `
-You are crop data extractor.
+The image contains a table.
 
-Read the table in image.
+Each row represents one crop.
 
-Return only JSON.
+Extract every row.
+
+Return ONLY JSON array.
 
 Format:
 
-{
-"name":"",
-"days":"",
-"status":"",
-"description":""
-}
+[
+ {
+  "name":"",
+  "days":"",
+  "description":"",
+  "status":""
+ }
+]
+
+Do not add markdown.
+Do not add explanation.
 
 `
-            },
+        },
 
-
-            {
-
-                inlineData: {
-
-                    mimeType: "image/jpeg",
-
-                    data: imageBase64
-
-                }
-
+        {
+            inlineData:{
+                mimeType:"image/jpeg",
+                data:imageBase64
             }
+        }
 
 
-        ]);
+    ]);
 
 
 
-    const text =
-        result.response.text();
+    let text = result.response.text();
 
 
-    // Strip markdown code fences if present
-    const cleaned = text
-        .replace(/```json/gi, "")
-        .replace(/```/g, "")
+
+    text = text
+        .replace(/```json/gi,"")
+        .replace(/```/g,"")
         .trim();
 
 
-    return JSON.parse(cleaned);
+
+    console.log("GEMINI RAW:",text);
+
+
+
+    return JSON.parse(text);
+
 
 
 }
+
 
 
 module.exports = extractCrop;

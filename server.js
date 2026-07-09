@@ -128,25 +128,36 @@ app.post("/webhook", async (req, res) => {
 
       // GEMINI EXTRACTION
 
-      const crop = await extractCrop(buffer);
+      const crops = await extractCrop(buffer);
 
-      console.log("GEMINI RESULT:", crop);
+      console.log("GEMINI RESULT:", crops);
 
-      // FIREBASE SAVE
-      await saveCrop(crop, whatsappImageURL, message);
+      // SAVE ALL ROWS
+
+      await saveCrop(crops, whatsappImageURL, message);
+
+      console.log("✅ ALL CROPS SAVED");
 
       console.log("✅ CROP SAVED TO FIREBASE");
 
       try {
         console.log("Sending WhatsApp reply to:", message.from);
 
-        const response = await sendTextMessage(
+        await sendTextMessage(
           message.from,
-          `✅ Crop saved successfully!
+          `✅ Crop table saved successfully!
 
-🌱 Crop: ${crop.name}
-📅 Days: ${crop.days}
-📌 Status: ${crop.status}
+🌱 Total Crops:
+${crops.length}
+
+${crops
+  .map(
+    (c, i) =>
+      `${i + 1}. ${c.name}
+Days: ${c.days}
+Status: ${c.status}`,
+  )
+  .join("\n\n")}
 
 Thank you for using VithaiBhoomi.`,
         );
