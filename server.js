@@ -138,36 +138,26 @@ app.post("/webhook", async (req, res) => {
       console.log("✅ CROP SAVED TO FIREBASE");
 
       try {
+        console.log("Sending WhatsApp reply to:", message.from);
 
-  console.log("Sending WhatsApp reply to:", message.from);
-
-
-  const response = await sendTextMessage(
-    message.from,
-    `✅ Crop saved successfully!
+        const response = await sendTextMessage(
+          message.from,
+          `✅ Crop saved successfully!
 
 🌱 Crop: ${crop.name}
 📅 Days: ${crop.days}
 📌 Status: ${crop.status}
 
-Thank you for using VithaiBhoomi.`
-  );
+Thank you for using VithaiBhoomi.`,
+        );
 
+        console.log("WhatsApp API Response:");
+        console.log(response);
+      } catch (err) {
+        console.log("❌ WhatsApp Reply Failed");
 
-  console.log("WhatsApp API Response:");
-  console.log(response);
-
-
-}
-catch(err){
-
-  console.log("❌ WhatsApp Reply Failed");
-
-  console.log(
-    err.response?.data || err.message
-  );
-
-}
+        console.log(err.response?.data || err.message);
+      }
 
       return;
     }
